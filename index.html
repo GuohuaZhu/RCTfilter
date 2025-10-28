@@ -4,197 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>临床试验筛选工具</title>
-    <!-- 加载 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 新增：MathJax 配置 -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']] // 定义行内数学公式的分隔符
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <!-- 新增：加载 MathJax 脚本 -->
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
     <style>
-        /* 基础样式 */
+        /* 保持简洁，主要依赖Tailwind */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+<body class="bg-gray-100 font-sans p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto">
-        <!-- 标题 -->
-        <header class="mb-8 p-6 bg-white rounded-2xl shadow-md">
-            <h1 class="text-3xl font-bold text-center text-gray-800">临床试验快速筛选工具</h1>
-            <p class="text-center text-gray-500 mt-2">根据患者情况快速匹配符合的临床试验项目 (基于 RCT入排.docx)</p>
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- 头部 -->
+        <header class="bg-blue-600 p-6">
+            <h1 class="text-3xl font-bold text-white text-center">妇科肿瘤临床试验筛选工具</h1>
+            <p class="text-blue-100 text-center mt-2">根据患者情况快速匹配符合条件的临床试验项目</p>
         </header>
 
-        <!-- 筛选器 -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl shadow-md mb-8">
-            <!-- 癌种 -->
-            <div>
-                <label for="cancer-select" class="block text-sm font-medium text-gray-700 mb-1">1. 癌种</label>
-                <select id="cancer-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <option value="all">所有癌种</option>
-                    <option value="ovarian">卵巢癌/输卵管癌/腹膜癌</option>
-                    <option value="endometrial">子宫内膜癌</option>
-                    <option value="solid-tumor">其他实体瘤</option>
-                </select>
-            </div>
-            <!-- 治疗线数 -->
-            <div>
-                <label for="lines-select" class="block text-sm font-medium text-gray-700 mb-1">2. 治疗线数</label>
-                <select id="lines-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <option value="all">所有线数</option>
-                    <option value="1">1 线</option>
-                    <option value="2">2 线</option>
-                    <option value="3">3 线</option>
-                    <option value="99">≥4 线</option>
-                    <option value="0">N/A (不适用)</option>
-                </select>
-            </div>
-            <!-- 铂类状态 -->
-            <div>
-                <label for="status-select" class="block text-sm font-medium text-gray-700 mb-1">3. 铂类状态</label>
-                <select id="status-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <option value="all">所有状态</option>
-                    <option value="sensitive">铂敏感 (≥6m)</option>
-                    <option value="sensitive-remission">铂敏感 (末次缓解/维持)</option>
-                    <option value="resistant">铂耐药 (≤6m)</option>
-                    <option value="na">N/A (不适用)</option>
-                </select>
-            </div>
-            <!-- 分子靶点 -->
-            <div>
-                <label for="target-select" class="block text-sm font-medium text-gray-700 mb-1">4. 分子靶点 (可选)</label>
-                <select id="target-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <option value="all">所有靶点</option>
-                    <option value="B7-H4">B7-H4</option>
-                    <option value="PARP">PARP</option>
-                    <option value="FRα">FRα</option>
-                    <option value="HER2">HER2</option>
-                </select>
-            </div>
-        </div>
+        <!-- 筛选表单 -->
+        <form id="filter-form" class="p-6 md:p-8 space-y-6 bg-white">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- 癌种 -->
+                <div>
+                    <label for="cancer-type" class="block text-sm font-medium text-gray-700 mb-2">1. 癌种</label>
+                    <select id="cancer-type" name="cancer-type" class="form-select block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="all">所有癌种</option>
+                        <option value="ovarian">卵巢癌 (含输卵管/腹膜)</option>
+                        <option value="endometrial">子宫内膜癌</option>
+                        <option value="solid-tumor">其他实体瘤</option>
+                    </select>
+                </div>
 
-        <!-- 筛选按钮 -->
-        <div class="text-center mb-8">
-            <button id="filter-button" class="w-full md:w-auto px-10 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200 transform hover:scale-105">
-                立即筛选
-            </button>
-        </div>
+                <!-- 治疗线数 -->
+                <div>
+                    <label for="treatment-line" class="block text-sm font-medium text-gray-700 mb-2">2. 治疗线数 (当前适用)</label>
+                    <select id="treatment-line" name="treatment-line" class="form-select block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="all">所有线数</option>
+                        <option value="0">N/A (维持治疗)</option>
+                        <!-- <option value="1">1 线</option>  <- 已移除此选项 -->
+                        <option value="2">2 线</option>
+                        <option value="3">3 线</option>
+                        <option value="99">≥ 4 线</option>
+                    </select>
+                </div>
+                
+                <!-- 铂类状态 -->
+                <div>
+                    <label for="platinum-status" class="block text-sm font-medium text-gray-700 mb-2">3. 铂类状态</label>
+                    <select id="platinum-status" name="platinum-status" class="form-select block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="all">所有状态</option>
+                        <option value="sensitive">铂敏感 (复发)</option>
+                        <option value="resistant">铂耐药 (复发)</option>
+                        <option value="sensitive-remission">铂敏感 (缓解-维持)</option>
+                        <option value="na">N/A (非卵巢癌或不限)</option>
+                    </select>
+                </div>
+                
+                <!-- 分子靶点 -->
+                <div>
+                    <label for="molecular-target" class="block text-sm font-medium text-gray-700 mb-2">4. 分子靶点</label>
+                    <select id="molecular-target" name="molecular-target" class="form-select block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="all">所有靶点</option>
+                        <option value="B7-H4">B7-H4</option>
+                        <option value="PARP">PARP</option>
+                        <option value="FRα">FRα (叶酸受体α)</option>
+                        <option value="HER2">HER2</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 按钮 -->
+            <div class="text-center pt-4">
+                <button type="submit" class="w-full md:w-auto inline-flex justify-center py-3 px-10 border border-transparent shadow-lg text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    立即筛选
+                </button>
+            </div>
+        </form>
 
         <!-- 结果区域 -->
-        <div id="results-container" class="space-y-6">
-            <!-- 初始提示信息 -->
-            <div id="initial-message" class="text-center text-gray-500 p-10 bg-white rounded-2xl shadow-md">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10.5a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5zM10 13.5a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5z" />
-                </svg>
-                <h3 class="mt-2 text-lg font-semibold">请选择筛选条件</h3>
-                <p class="mt-1 text-sm">请在上方选择癌种、线数、状态或靶点，然后点击“立即筛选”按钮。</p>
-            </div>
-            <!-- 筛选结果将动态插入此处 -->
+        <div id="results-container" class="p-6 md:p-8 bg-gray-50 min-h-[200px]">
+            <p class="text-center text-gray-500">请选择筛选条件后点击按钮。</p>
         </div>
     </div>
 
-    <!-- 
-      核心脚本
-      1. 加载外部的试验数据
-      2. 运行筛选逻辑
-    -->
+    <!-- 外部数据脚本 -->
     <script src="data.js"></script>
 
+    <!-- 筛选逻辑脚本 -->
     <script>
-        // --- DOM 元素 ---
-        const cancerSelect = document.getElementById('cancer-select');
-        const linesSelect = document.getElementById('lines-select');
-        const statusSelect = document.getElementById('status-select');
-        const targetSelect = document.getElementById('target-select');
-        const filterButton = document.getElementById('filter-button');
-        const resultsContainer = document.getElementById('results-container');
-        const initialMessage = document.getElementById('initial-message');
-
-        // 绑定点击事件
-        if (filterButton) {
-            filterButton.addEventListener('click', filterTrials);
-        } else {
-            console.error("错误：未找到 'filter-button' 按钮。");
+        // 确保 data.js 加载
+        if (typeof trialsData === 'undefined') {
+            document.getElementById('results-container').innerHTML = '<p class="text-center text-red-500 font-bold">错误：试验数据 (data.js) 加载失败。</p>';
         }
 
+        document.getElementById('filter-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单提交
+            filterTrials();
+        });
 
-        /**
-         * 主筛选函数
-         */
         function filterTrials() {
-            // 确保 trialsData 已加载
-            if (typeof trialsData === 'undefined' || trialsData === null) {
-                console.error('试验数据 (data.js) 未加载或为空。');
-                resultsContainer.innerHTML = `
-                    <div class="text-center text-red-500 p-10 bg-white rounded-2xl shadow-md">
-                        <h3 class="mt-2 text-lg font-semibold">加载错误</h3>
-                        <p class="mt-1 text-sm">无法加载试验数据 (data.js)，请检查文件是否存在且内容正确。</p>
-                    </div>
-                `;
-                if (initialMessage) {
-                    initialMessage.style.display = 'none';
-                }
-                return;
-            }
-
-            // 隐藏初始消息
-            if (initialMessage) {
-                initialMessage.style.display = 'none';
-            }
-
-            // 获取筛选值
-            const selectedCancer = cancerSelect.value;
-            const selectedLine = linesSelect.value;
-            const selectedStatus = statusSelect.value;
-            const selectedTarget = targetSelect.value;
-
-            // 执行筛选
-            const matchedTrials = trialsData.filter(trial => {
-                // 1. 癌种筛选
-                const cancerMatch = (selectedCancer === 'all') || (trial.cancer === selectedCancer);
+            const cancer = document.getElementById('cancer-type').value;
+            const line = document.getElementById('treatment-line').value;
+            const status = document.getElementById('platinum-status').value;
+            const target = document.getElementById('molecular-target').value;
+            
+            const filtered = trialsData.filter(trial => {
+                // 1. 癌种
+                const cancerMatch = (cancer === 'all') || (trial.cancer === cancer);
                 
-                // 2. 线数筛选
-                const lineMatch = (selectedLine === 'all') || trial.lines.includes(Number(selectedLine));
-
-                // 3. 状态筛选
-                const statusMatch = (selectedStatus === 'all') || trial.status.includes(selectedStatus);
-
-                // 4. 靶点筛选
-                const targetMatch = (selectedTarget === 'all') || (trial.target === selectedTarget);
+                // 2. 线数
+                const lineMatch = (line === 'all') || (trial.lines.includes(parseInt(line)));
+                
+                // 3. 状态
+                const statusMatch = (status === 'all') || (trial.status.includes(status));
+                
+                // 4. 靶点
+                const targetMatch = (target === 'all') || (trial.target === target);
 
                 return cancerMatch && lineMatch && statusMatch && targetMatch;
             });
 
-            // 渲染结果
-            renderResults(matchedTrials, selectedTarget);
+            renderResults(filtered, target);
         }
 
-        /**
-         * 渲染筛选结果
-         * @param {Array} trials - 筛选后的试验数组
-         * @param {string} selectedTarget - 用户选择的靶点
-         */
-        function renderResults(trials, selectedTarget) {
-            // 清空旧结果
-            resultsContainer.innerHTML = '';
-
-            if (trials.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="text-center text-gray-500 p-10 bg-white rounded-2xl shadow-md">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                        </svg>
-                        <h3 class="mt-2 text-lg font-semibold">未找到匹配项</h3>
-                        <p class="mt-1 text-sm">没有找到符合当前筛选条件的临床试验。请尝试放宽筛选条件。</p>
-                    </div>
-                `;
+        function renderResults(filteredTrials, selectedTarget) {
+            const resultsContainer = document.getElementById('results-container');
+            
+            if (filteredTrials.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-center text-gray-700 font-semibold">未找到符合条件的临床试验。</p>';
                 return;
             }
 
-            // 如果用户指定了靶点，就按该靶点分组
-            // 如果用户没选靶点，就按试验本身的靶点动态分组
-            const groups = trials.reduce((acc, trial) => {
-                const key = (selectedTarget !== 'all') ? selectedTarget : (trial.target || '其他');
+            // 按靶点分组
+            const groupedResults = filteredTrials.reduce((acc, trial) => {
+                const key = trial.target || '其他';
                 if (!acc[key]) {
                     acc[key] = [];
                 }
@@ -202,52 +172,58 @@
                 return acc;
             }, {});
 
-            // 排序：B7-H4, PARP, FRα, HER2, 其他
-            const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
-                const order = { 'B7-H4': 1, 'PARP': 2, 'FRα': 3, 'HER2': 4, '其他': 99 };
-                return (order[a] || 100) - (order[b] || 100);
-            });
+            let html = '';
 
-            // 循环渲染每个分组
-            for (const targetName of sortedGroupKeys) {
-                const trialsInGroup = groups[targetName];
+            // 如果用户筛选了特定靶点，优先显示
+            if (selectedTarget !== 'all' && groupedResults[selectedTarget]) {
+                appendGroupHtml(groupedResults[selectedTarget], selectedTarget);
+                delete groupedResults[selectedTarget];
+            }
+
+            // 显示剩余靶点
+            for (const target in groupedResults) {
+                appendGroupHtml(groupedResults[target], target);
+            }
+
+            function appendGroupHtml(trials, target) {
+                html += `<div class="mb-8">
+                            <h2 class="text-xl font-bold text-white bg-blue-500 -mx-6 md:-mx-8 px-6 md:px-8 py-3 rounded-t-md">靶点：${target} (共 ${trials.length} 项)</h2>
+                            <div class="border-l border-r border-b border-gray-200 rounded-b-md bg-white">`;
                 
-                // 创建分组容器
-                const groupEl = document.createElement('div');
-                groupEl.className = 'bg-white rounded-2xl shadow-md overflow-hidden';
-                
-                // 分组标题
-                let bgColor = 'bg-gray-600';
-                if (targetName === 'B7-H4') bgColor = 'bg-blue-600';
-                if (targetName === 'PARP') bgColor = 'bg-green-600';
-                if (targetName === 'FRα') bgColor = 'bg-purple-600';
-                if (targetName === 'HER2') bgColor = 'bg-red-600';
-
-                let groupHTML = `
-                    <div class="p-4 ${bgColor} text-white">
-                        <h2 class="text-xl font-bold">靶点: ${targetName} (共 ${trialsInGroup.length} 项)</h2>
-                    </div>
-                    <ul class="divide-y divide-gray-200">
-                `;
-
-                // 渲染组内的每个试验
-                for (const trial of trialsInGroup) {
-                    groupHTML += `
-                        <li class="p-4 hover:bg-gray-50">
+                trials.forEach((trial, index) => {
+                    html += `
+                        <div class="p-5 ${index < trials.length - 1 ? 'border-b border-gray-200' : ''}">
                             <h3 class="text-lg font-semibold text-gray-900">${trial.name} (ID: ${trial.id})</h3>
-                            <ul class="mt-2 list-disc list-inside space-y-1 text-gray-700">
-                                ${trial.keyPoints.map(point => `<li>${point}</li>`).join('')}
-                            </ul>
-                        </li>
-                    `;
-                }
+                            <ul class="mt-3 list-disc list-inside space-y-2 text-gray-700">`;
+                    
+                    trial.keyPoints.forEach(point => {
+                        // 用 '●' 和加粗来代替 list-disc，以获得更好对齐
+                        html += `<li class="flex items-start">
+                                    <span class="text-blue-500 mr-2 mt-1.5 flex-shrink-0">●</span>
+                                    <span>${point.replace(/：/g, '：<strong>').replace(/$/g, '</strong>')}</span>
+                                 </li>`;
+                    });
 
-                groupHTML += '</ul></div>';
-                groupEl.innerHTML = groupHTML;
-                resultsContainer.appendChild(groupEl);
+                    html += `</ul>
+                        </div>`;
+                });
+                
+                html += `</div></div>`;
+            }
+
+            resultsContainer.innerHTML = html;
+            
+            // 新增：通知 MathJax 渲染新内容
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                // 延迟一小会，确保 DOM 更新完毕
+                setTimeout(() => {
+                    window.MathJax.typesetPromise([resultsContainer])
+                        .catch((err) => console.log('MathJax 渲染失败: ', err));
+                }, 0);
             }
         }
-
     </script>
 </body>
 </html>
+
+
