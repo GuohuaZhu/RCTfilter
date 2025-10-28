@@ -119,8 +119,8 @@ const trialsData = [
         ]
     },
     {
-        id: 'BAT8006 (HER2)', // 文档中标题重复，但内容指向HER2
-        name: 'BAT8006 (HER2 试验)',
+        id: 'IBI354 (HER2 试验)', // 修正：根据新文档更新 ID
+        name: 'IBI354 (HER2 试验)', // 修正：根据新文档更新名称
         cancer: 'ovarian',
         lines: [2, 3, 99], // 适用于 2L+
         status: ['resistant'], // 特定铂耐药定义
