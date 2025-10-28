@@ -6,21 +6,7 @@
     <title>临床试验筛选工具</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 新增：MathJax 配置 -->
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']] // 定义行内数学公式的分隔符
-        },
-        svg: {
-          fontCache: 'global'
-        }
-      };
-    </script>
-    <!-- 新增：加载 MathJax 脚本 -->
-    <script type="text/javascript" id="MathJax-script" async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-    </script>
+    <!-- 移除 MathJax 配置和脚本 -->
     
     <style>
         /* 保持简洁，主要依赖Tailwind */
@@ -198,9 +184,11 @@
                     
                     trial.keyPoints.forEach(point => {
                         // 用 '●' 和加粗来代替 list-disc，以获得更好对齐
+                        // 修正：同时匹配全角：和半角:
+                        const boldPoint = point.replace(/：/g, '：<strong>').replace(/:/g, ':<strong>');
                         html += `<li class="flex items-start">
                                     <span class="text-blue-500 mr-2 mt-1.5 flex-shrink-0">●</span>
-                                    <span>${point.replace(/：/g, '：<strong>').replace(/$/g, '</strong>')}</span>
+                                    <span>${boldPoint.endsWith('</strong>') ? boldPoint : boldPoint + '</strong>'}</span>
                                  </li>`;
                     });
 
@@ -213,17 +201,9 @@
 
             resultsContainer.innerHTML = html;
             
-            // 新增：通知 MathJax 渲染新内容
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                // 延迟一小会，确保 DOM 更新完毕
-                setTimeout(() => {
-                    window.MathJax.typesetPromise([resultsContainer])
-                        .catch((err) => console.log('MathJax 渲染失败: ', err));
-                }, 0);
-            }
+            // 移除 MathJax 渲染调用
         }
     </script>
 </body>
 </html>
-
 
