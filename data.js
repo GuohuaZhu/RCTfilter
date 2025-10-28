@@ -40,7 +40,7 @@ const trialsData = [
         keyPoints: [
             '癌种：铂敏感复发卵巢癌、输卵管癌或原发性腹膜癌',
             '线数：适用 $\ge 2$ 线治疗 (要求: 既往 $\ge 1$ 线含铂化疗后进展)',
-            '状态：铂类敏感 (无铂间期 ≥6个月)',
+            '状态：铂类敏感 (无铂间期 $\ge 6$ 个月)',
             '靶点：B7-H4 (排除标准：既往B7-H4靶点治疗)'
         ]
     },
@@ -48,7 +48,7 @@ const trialsData = [
         id: 'HS-20089-201 (队列4)',
         name: 'HS-20089-201 (队列4)',
         cancer: 'solid-tumor',
-        lines: [0, 1, 2, 3, 99], // 不变：无标准治疗，适用于任何线
+        lines: [0, 2, 3, 99], // 适用于除1线外的所有线 (无标准治疗)
         status: ['na'],
         target: 'B7-H4',
         keyPoints: [
@@ -68,7 +68,7 @@ const trialsData = [
         keyPoints: [
             '癌种：铂敏感复发卵巢癌、输卵管癌或原发性腹膜癌',
             '线数：适用 $\ge 3$ 线治疗 (要求: 既往 $\ge 2$ 线含铂化疗后进展)',
-            '状态：铂类敏感 (无铂间期 ≥6个月)',
+            '状态：铂类敏感 (无铂间期 $\ge 6$ 个月)',
             '核心：既往需 PARP 抑制剂经治',
             '靶点：B7-H4 (排除标准：既往B7-H4靶点治疗)'
         ]
@@ -77,7 +77,7 @@ const trialsData = [
         id: 'HS-20089-301',
         name: 'HS-20089-301',
         cancer: 'ovarian',
-        lines: [2, 3, 99], // 适用于 2L-4L
+        lines: [2, 3, 99], // 适用于 2L-4L (原文1-3线进展)
         status: ['resistant'],
         target: 'B7-H4',
         keyPoints: [
@@ -107,7 +107,7 @@ const trialsData = [
         id: 'BAT8006 (FRα)',
         name: 'BAT8006 (FRα 试验)',
         cancer: 'ovarian',
-        lines: [2, 3, 99], // 适用于 2L-4L
+        lines: [2, 3, 99], // 适用于 2L-4L (原文≤3线进展)
         status: ['resistant'],
         target: 'FRα',
         keyPoints: [
